@@ -1,0 +1,18 @@
+language: python
+python:
+    - '3.6'
+env:
+  global:
+    - SECRET_KEY="yt6(3h=-sikg$zrvs=-8uw+=c8fwk$xo!o7$dq^66m8(*0hkcg"
+    - DB_NAME=app
+    - DB_USER=postgres
+    - DB_PASS=postgres
+
+
+services:
+    - docker
+
+before_script: pip install docker-compose
+
+script:
+  - docker-compose run app sh -c "python manage.py test && flake8"

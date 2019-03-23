@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,13 +19,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'yt6(3h=-sikg$zrvs=-8uw+=c8fwk$xo!o7$dq^66m8(*0hkcg'
+DJANGO_SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+DJANGO_ALLOWED_HOST = os.environ.get('DJANGO_ALLOWED_HOST')
+
+SECRET_KEY = DJANGO_SECRET_KEY
+#SECRET_KEY = 'yt6(3h=-sikg$zrvs=-8uw+=c8fwk$xo!o7$dq^66m8(*0hkcg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if  os.environ.get('DEBUG') == 'true' else False
 
-ALLOWED_HOSTS = ['192.168.99.100']
-
+ALLOWED_HOSTS = []
+if DJANGO_ALLOWED_HOST:
+    ALLOWED_HOSTS.extend(DJANGO_ALLOWED_HOST.split(','))
 
 # Application definition
 
@@ -72,14 +76,16 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': os.environ.get('DB_HOST'),
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASS')
+        'HOST': 'db',
+        'PORT': '5432', 
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': POSTGRES_PASSWORD,
     }
 }
 

@@ -6,17 +6,18 @@ services:
         ports:
             - '8000:8000'
         command: >
-            sh -c " pwd &&
-                    ls -l && 
-                    python manage.py migrate &&
+            sh -c " python manage.py migrate &&
                     python manage.py runserver 0.0.0.0:8000"
         environment:
-            - DB_HOST=db
-            - DB_NAME=app
-            - DB_USER=postgres
-            - DB_PASS=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_USER=postgres
+            - DJANGO_SECRET_KEY=yt6(3h=-sikg$zrvs=-8uw+=c8fwk$xo!o7$dq^66m8(*0hkcg
+            - DJANGO_ALLOWED_HOST=192.168.99.100
+            - DEBUG=true
         depends_on:
             - db
+        networks:
+            - backend
 
     db:
         image: postgres:10-alpine
@@ -24,3 +25,23 @@ services:
             - POSTGRES_DB=app
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=postgres
+        ports:
+            - "5432:5432"
+        networks:
+            - backend
+
+    db-admin:
+        image: dpage/pgadmin4
+        environment:
+            - PGADMIN_DEFAULT_EMAIL=venkat.330@gmail.com
+            - PGADMIN_DEFAULT_PASSWORD=postgres
+        depends_on:
+            - db
+        ports:
+            - "8080:80"
+        networks:
+            - backend
+
+networks:
+  backend:
+    driver: bridge
